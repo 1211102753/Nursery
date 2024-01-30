@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Review</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <a class="nav-link active" aria-current="page" href="{% url 'plant_list' %}">Plant List</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'view_cart' %}">Shopping Cart</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'my_orders' %}">My Orders</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'account_settings' %}">Account Settings</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'to_review' %}">To Review</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'view_wishlist' %}">Wishlist</a>
+                <a class="nav-link" href="#">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2 class="mb-4">To Review</h2>
+        {% for item in order_items_to_review %}
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <img src="{{ item.plant.plant_image.url }}" alt="{{ item.plant.plant_name }}" class="img-fluid">
+            </div>
+            <div class="col-md-8">
+                <form action="{% url 'submit_review' item.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-row align-items-center">
+                        <div class="col-auto">
+                            <label for="plantName{{ forloop.counter }}" class="col-form-label"><strong>Plant Name:</strong></label>
+                        </div>
+                        <div class="col">
+                            <input type="text" id="plantName{{ forloop.counter }}" class="form-control-plaintext" readonly
+                                   value="{{ item.plant.plant_name }}">
+                        </div>
+                    </div>                    
+                    <div class="form-group">
+                        <label for="rating{{ forloop.counter }}"><strong>Rating:</strong></label>
+                        <select name="rating" id="rating{{ forloop.counter }}" class="form-control" required>
+                            <option value="">Rate the plant</option>
+                            <option value="1">1 Star</option>
+                            <option value="2">2 Stars</option>
+                            <option value="3">3 Stars</option>
+                            <option value="4">4 Stars</option>
+                            <option value="5">5 Stars</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="review{{ forloop.counter }}"><strong>Review:</strong></label>
+                        <textarea name="comment" id="review{{ forloop.counter }}" class="form-control"
+                            placeholder="Write your review here..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary float-right">Submit</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-warning" role="alert">
+            You have no items to review.
+        </div>
+        {% endfor %}
+    </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

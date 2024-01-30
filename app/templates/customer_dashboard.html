@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Customer Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .header-section {
+            padding: 2rem 0;
+            background: #f8f9fa;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e3e3e3;
+        }
+
+        .search-bar-container {
+            margin-bottom: 2rem;
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 35vw;
+            object-fit: cover;
+        }
+
+        .review {
+            border: 1px solid #e3e3e3;
+            /* 添加边框 */
+            padding: 10px;
+            /* 内部间距 */
+            margin-bottom: 10px;
+        }
+
+        .search-input {
+            width: 100%;
+            /* 使输入框宽度为100% */
+        }
+
+        .plant-list-title {
+            margin-bottom: 1rem;
+            /* 在标题下方添加一些间隔 */
+        }
+
+        @media (max-width: 768px) {
+            .search-input {
+                margin-bottom: 0.5rem;
+                /* 在小屏幕上为搜索框下方添加一些间隔 */
+            }
+
+            .search-button {
+                width: 100%;
+                /* 在小屏幕上让按钮宽度为100% */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <a class="nav-link active" aria-current="page" href="{% url 'plant_list' %}">Plant List</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'view_cart' %}">Shopping Cart</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'my_orders' %}">My Orders</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'account_settings' %}">Account Settings</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'to_review' %}">To Review</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'view_wishlist' %}">Wishlist</a>
+                <a class="nav-link" href="#">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <div class="header-section text-center">
+        <h1>Welcome to Customer Dashboard</h1>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-left">
+                <h2 class="plant-list-title">Plant List</h2>
+            </div>
+        </div>
+        <div class="row search-bar-container align-items-center">
+            <div class="col-12">
+                <form class="card card-sm">
+                    <div class="card-body row no-gutters align-items-center">
+                        <div class="col">
+                            <input type="search" name='item_name' placeholder="Search plant by plant name"
+                                class="form-control form-control-lg search-input">
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-success" type="submit">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% if plant_objects %}
+            {% for plant in plant_objects %}
+            <div class="col">
+                <div class="card h-100">
+                    <img src="{{ plant.plant_image.url }}" class="card-img-top" alt="{{ plant.plant_name }}">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title"><strong>Plant Name:</strong>{{ plant.plant_name }}</h5>
+                        <p class="card-title"><strong>Plant ID:</strong>{{ plant.id }}</p>
+                        <p class="card-text"><strong>Plant Description:</strong> {{ plant.plant_description }}</p>
+                        <p class="card-text"><strong>Price:</strong> RM{{ plant.plant_price }}</p>
+                        <p class="card-text"><strong>Availability:</strong> {{ plant.plant_availability }}</p>
+                        <p class="card-text"><strong>Reviews:</strong></p>
+                        <ul>
+                            {% for review in plant.reviews %}
+                            <li class="review">
+                                <strong>{{ review.order_item.order.customer.customer_name }} (Rating: {{ review.rating }} star)</strong><br>
+                                Comment: {{ review.comment }}<br>
+                            </li>
+                            {% empty %}
+                            <li class="no-reviews">No reviews yet.</li>
+                            {% endfor %}
+                        </ul>                        
+                        <div class="mt-auto">
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <form action="{% url 'add_to_cart' plant.id %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-warning">Add to cart</button>                                                   
+                                </form>
+                                <a href="{% url 'add_to_wishlist' plant.id %}" class="btn btn-warning">Add to Wishlist</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="col-md-12">
+                <div class="alert alert-warning" role="alert">
+                    No plants match the entered criteria.
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+<!-- by TOH EE LIN -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="{% url 'plantManagement' %}" class="nav-button">Plant Management</a>
+        <a href="{% url 'orderManagement' %}" class="nav-button">Order Management</a>
+        <a href="{% url 'deliveryManagement' %}" class="nav-button">Delivery Management</a>
+        <a href="{% url 'logout' %}" class="nav-button logout">Logout</a>
+    </div>
+    <div class="main">
+        <h1>Welcome to Admin Dashboard</h1>
+    </div>
+</body>
+
+</html>

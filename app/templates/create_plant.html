@@ -1,0 +1,54 @@
+<!-- by TOH EE LIN -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Plant</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="{% url 'plantManagement' %}" class="nav-button">Plant Management</a>
+        <a href="{% url 'orderManagement' %}" class="nav-button">Order Management</a>
+        <a href="{% url 'deliveryManagement' %}" class="nav-button">Delivery Management</a>
+        <a href="{% url 'logout' %}" class="nav-button logout">Logout</a>
+    </div>
+
+    <div class="form-container">
+        <h1>Create New Plant Form</h1>
+        <form action="{% url 'createPlant' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}            
+            <div class="form-row">
+                <label for="plant-name">Enter Plant Name</label>
+                <input type="text" id="plant-name" name="plant_name">
+            </div>
+            <div class="form-row">
+                <label for="plant-description">Enter Plant Descriptions</label>
+                <textarea id="plant-description" name="plant_description"></textarea>
+            </div>
+            <div class="form-row">
+                <label for="plant-quantity">Enter Plant Quantity</label>
+                <input type="number" id="plant-quantity" name="plant_availability">
+            </div>
+            <div class="form-row">
+                <label for="plant-price">Enter Plant Price</label>
+                <input type="text" id="plant-price" name="plant_price">
+            </div>
+            <div class="form-row">
+                <label for="plant-image">Choose Image</label>
+                <input type="file" id="plant-image" name="plant_image">
+            </div>
+            <div class="form-buttons">
+                <input type="button" value="Back" onclick="history.back()">
+                <input type="submit" value="Confirm">
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

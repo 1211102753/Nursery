@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <a class="nav-link active" aria-current="page" href="{% url 'plant_list' %}">Plant List</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'view_cart' %}">Shopping Cart</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'my_orders' %}">My Orders</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'account_settings' %}">Account Settings</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'to_review' %}">To Review</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'view_wishlist' %}">Wishlist</a>
+                <a class="nav-link" href="#">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2 class="mb-4">Wishlist</h2>
+        {% for item in wishlist_items %}
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-4" style="padding: 15px;">
+                            <img src="{{ item.plant.plant_image.url }}" alt="{{ item.plant.plant_name }}"
+                                style="width: 100%; height: auto; display: block; margin-left: 20px; margin-right: auto;">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title" style="margin-bottom: 1rem;"><strong>Plant Name :</strong>{{ item.plant.plant_name }}</h5>
+                                <h5 class="card-text" style="margin-bottom: 1rem;"><strong>Price :</strong>RM{{ item.plant.plant_price }}</h5>
+                                <a href="{% url 'remove_from_wishlist' item.id %}" class="btn btn-danger" style="margin-bottom: 4rem;">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info text-center mt-4">
+          <strong>Your wishlist is empty.</strong>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

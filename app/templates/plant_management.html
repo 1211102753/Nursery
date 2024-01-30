@@ -1,0 +1,105 @@
+<!-- by TOH EE LIN -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Management</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+    <!--JavaScript to navigate to create form page-->
+    <script>
+        function redirectToCreatePlantForm() {
+            // Redirect to the URL for create a new plant
+            window.location.href = "{% url 'createPlant' %}";
+        }
+    </script>
+
+     <!--JavaScript to navigate to update form page-->
+    <script>
+        function redirectToUpdatePlantForm(plant_id) {
+            // Redirect to the URL for update a plant with the specific ID
+            window.location.href = `/adm/plant/update/${plant_id}/`;        
+        }
+    </script>
+
+    <!-- Include JavaScript for confirmation dialog -->
+    <script type="text/javascript">
+        function confirmDelete() {
+            return confirm('Are you sure you want to delete this plant?');
+        }
+    </script>
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="{% url 'plantManagement' %}" class="nav-button">Plant Management</a>
+        <a href="{% url 'orderManagement' %}" class="nav-button">Order Management</a>
+        <a href="{% url 'deliveryManagement' %}" class="nav-button">Delivery Management</a>
+        <a href="{% url 'logout' %}" class="nav-button logout">Logout</a>
+    </div>
+
+    <div class="main-content">
+        <h1>Plant Management</h1>
+
+        <div class="search-bar">
+            <form action="{% url 'plantManagement' %}" method="get">
+                <div class="search-container">
+                    <input type="text" name="search_query" placeholder="Search Plant by Plant Name" value="{{ search_query }}" style="width: 400px;">
+                    <button type="submit" class="search-button">Search</button>
+                </div> 
+            </form>
+            <button class="create-button" onclick="redirectToCreatePlantForm()">Create New Plant</button>
+        </div>
+        
+
+        {% for plant in plants %}
+        <div class="plant-container">
+            <div class="plant-details">
+                <div class="plant-image">
+                    <!-- The actual path to image file -->
+                    <img src="{{plant.plant_image.url}}" alt="Plant Image" width="180px" height="220px">
+                </div>
+                
+                <div class="plant-info">
+                    <div class="info-text">
+                        <p>Plant ID: {{plant.id}}</p>
+                        <p>Plant Name: {{plant.plant_name}}</p>
+                        <p>Description: {{plant.plant_description}}</p>
+                        <p>Price: {{plant.plant_price}}</p>
+                        <p>Availability: {{plant.plant_availability}}</p>
+                    </div>
+                    <div class="info-buttons">
+                        <button class="edit-button" onclick="redirectToUpdatePlantForm({{ plant.id }})">Edit</button>
+                        <!-- Delete button form with CSRF token and confirmation dialog -->
+                        <form action="{% url 'deletePlant' plant.id %}" method="post" onsubmit="return confirmDelete();">
+                            {% csrf_token %}
+                            <input type="submit" value="Delete" class="delete-button"/>
+                        </form>                    
+                    </div>
+                </div>  
+            </div> 
+
+            <!-- Reviews section -->
+            <div class="reviews-title">Reviews</div>
+                <p>
+                    {% for review in plant.reviews %}
+                        <li class="review">
+                            <strong>{{ review.order_item.order.customer.customer_name }} (Rating: {{ review.rating }} star)</strong><br>
+                            Comment: {{ review.comment }}<br>
+                
+                        </li>
+                    {% empty %}
+                        <li class="no-reviews">No reviews yet.</li>
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>

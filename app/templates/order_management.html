@@ -1,0 +1,81 @@
+<!-- by TOH EE LIN -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="{% url 'plantManagement' %}" class="nav-button">Plant Management</a>
+        <a href="{% url 'orderManagement' %}" class="nav-button">Order Management</a>
+        <a href="{% url 'deliveryManagement' %}" class="nav-button">Delivery Management</a>
+        <a href="{% url 'logout' %}" class="nav-button logout">Logout</a>
+    </div>
+
+    <div class="main-content">
+        <h1>Order Management</h1>
+
+        <div class="search-bar">
+            <form action="{% url 'orderManagement' %}" method="get">
+                <div class="search-container">
+                    <input type="text" name="search_query" placeholder="Search by Order ID" style="width: 400px;">
+                    <button type="submit" class="search-button">Search</button>
+                </div>
+            {% if error_message %}
+                <div class="error-message">{{ error_message }}</div>
+            {% endif %}
+            </form>
+        </div>
+
+        {% for order in orders%}
+        <div class="order-container">
+            <div class="order-details">
+                <div class="info-text">
+                    <p>OrderID: {{ order.id }}</p>
+                    <p>Full Name: {{ order.customer.customer_name }}</p>
+                    <p>Email: {{ order.customer.user.email }}</p>
+                    <p>State: {{ order.customer.customer_state }}</p>
+                    <p>Total Plants: {{ order.total_plant_quantity }}</p>
+                    <p>Total Price: {{ order.payment.order_total_price }}</p>
+                </div>
+
+                <div class="info-text">
+                    <p>UserID: {{ order.customer.user.id }}</p>
+                    <p>Phone Number: {{ order.customer.customer_phone_number }}</p>
+                    <p>Address: {{ order.customer.customer_address }}</p>
+                    <p>Order Date: {{ order.payment.order_date }}</p>
+                    <p>Receive Method: {{ order.payment.receive_method }}</p>
+                </div>
+
+                <div class="info-text">
+                    <!-- Order status dropdown -->
+                    <form action="{% url 'update_order_status' order.id %}" method="post">
+                        {% csrf_token %}
+                        <label for="status-select-{{ order.id }}">Order Status:</label>
+                        <select id="status-select-{{ order.id }}" class="status-select" name="status">
+                            {% if order.payment.receive_method == 'Delivery' %}
+                                <option value="Waiting" {% if order.order_status == 'Waiting' %}selected{% endif %}>Waiting</option>
+                                <option value="Ready" {% if order.order_status == 'Ready' %}selected{% endif %}>Ready</option>
+                            {% elif order.payment.receive_method == 'Pickup' %}
+                                <option value="Waiting" {% if order.order_status == 'Waiting' %}selected{% endif %}>Waiting</option>
+                                <option value="Ready" {% if order.order_status == 'Ready' %}selected{% endif %}>Ready</option>
+                                <option value="Completed" {% if order.order_status == 'Completed' %}selected{% endif %}>Completed</option>
+                            {% endif %}
+                        </select>
+                        <button type="submit" class="update-status-button">Update Status</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>

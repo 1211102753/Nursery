@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Shopping Cart</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    {% load app_extras %}
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <a class="nav-link active" aria-current="page" href="{% url 'plant_list' %}">Plant List</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'view_cart' %}">Shopping Cart</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'my_orders' %}">My Orders</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'account_settings' %}">Account Settings</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'to_review' %}">To Review</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'view_wishlist' %}">Wishlist</a>
+                <a class="nav-link" href="#">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2 class="mb-4">Shopping Cart</h2>
+        {% for item in cart_items %}
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-4" style="padding: 15px;"> <!-- Padding inside the container -->
+                            <img src="{{ item.plant.plant_image.url }}" alt="{{ item.plant.plant_name }}" style="width: 100%; height: auto; display: block; margin-left: 20px; margin-right: auto;"> <!-- Additional left margin -->
+                        </div>                                               
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title" style="margin-bottom: 1rem;"><strong>Plant Name :</strong>{{ item.plant.plant_name }}</h5>
+                                <p class="card-text" style="margin-bottom: 1rem;"><strong>Plant ID: </strong>{{ item.plant_id }}</p>
+                                <p class="card-text" style="margin-bottom: 1rem;"><strong>Price :</strong>RM{{ item.cart_item_price }}</p>
+                                <!-- Inside the loop in cart.html -->
+                                <form action="{% url 'update_cart_item' item.id %}" method="post" style="margin-bottom: 1rem;">
+                                    {% csrf_token %}
+                                    <div style="margin-bottom: 1rem;">
+                                        <label for="quantity{{ forloop.counter }}"><strong>Quantity :</strong></label>
+                                        <input type="number" id="quantity{{ forloop.counter }}" name="quantity" value="{{ item.cart_plant_quantity }}" min="1" class="form-control" style="width: 100px; display: inline-block;" onchange="this.form.submit()">
+                                    </div>
+                                </form>
+                                <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger" style="margin-bottom: 1rem;">Remove</a>
+                                <h3 style="margin-bottom: 1rem;">Total: RM{{ item.plant.plant_price|multiply:item.cart_plant_quantity }}</h3>
+                            </div>                                                        
+                        </div>
+                    </div>
+                </div>  
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info text-center mt-4">
+            <strong>Your shopping cart is empty.</strong>
+          </div>
+        {% endfor %}
+        <h3>Total Price: RM{{ total_price }}</h3>
+        <div class="d-grid gap-2">
+            <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg">Checkout</a>
+        </div>   
+    </div>
+    
+    <!-- Include the custom template tag 'multiply' for the total calculation -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <a class="nav-link active" aria-current="page" href="{% url 'plant_list' %}">Plant List</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'view_cart' %}">Shopping Cart</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'my_orders' %}">My Orders</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'account_settings' %}">Account Settings</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'to_review' %}">To Review</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'view_wishlist' %}">Wishlist</a>
+                <a class="nav-link" href="#">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2 class="mb-4">Edit Profile</h2>
+        <form method="post" action="{% url 'update_profile' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="fullName">Full Name:</label>
+                <input type="text" id="fullName" name="full_name" class="form-control" value="{{ customer.customer_name }}">
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" value="{{ customer.user.email }}">
+            </div>
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number:</label>
+                <input type="text" id="phoneNumber" name="phone_number" class="form-control" value="{{ customer.customer_phone_number }}">
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" class="form-control" value="{{ customer.customer_address }}">
+            </div>
+            <div class="form-group">
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" class="form-control" value="{{ customer.customer_state }}">
+            </div>
+            <div class="form-group">
+                <label for="icNo">IC No:</label>
+                <input type="text" id="icNo" name="ic_no" class="form-control" value="{{ customer.customer_ic }}">
+            </div>
+            <!-- Include additional fields as necessary -->
+            <button type="submit" class="btn btn-primary">Confirm</button>
+            <a href="{% url 'account_settings' %}" class="btn btn-secondary">Back</a>
+        </form>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+    </html>

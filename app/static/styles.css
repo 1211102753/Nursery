@@ -1,0 +1,354 @@
+/* by TOH EE LIN */
+body,
+html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial;
+    background-color: #f0fff0;
+}
+
+/* by TOH EE LIN */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 25px;
+    background-color: #008080;
+    border-bottom: 5px solid #ccc;
+}
+
+/* by TOH EE LIN */
+.nav-button {
+    background-color: #f5fffa;
+    border: 2px solid #d4d4d4;
+    border-radius: 15px;
+    padding: 15px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 4px 2px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+}
+
+/* by TOH EE LIN */
+.nav-button:hover {
+    background-color: #d4d4d4;
+}
+
+/* by TOH EE LIN */
+.logout {
+    background-color: #d2691e;
+    color: white;
+}
+
+/* by TOH EE LIN */
+.logout:hover {
+    background-color: #964104;
+}
+
+/* by TOH EE LIN */
+.main {
+    padding: 20px;
+    text-align: center;
+}
+
+/* by TOH EE LIN */
+.main-content {
+    padding: 20px;
+    text-align: left;
+}
+
+/* by TOH EE LIN */
+h1 {
+    margin-top: 50px;
+    font-weight: bold;
+    color: #333;
+    display: inline;
+    border-bottom: 3px solid #333;
+}
+
+/* by TOH EE LIN */
+.search-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+    padding: 10px;
+    width: 500px;
+}
+
+/* by TOH EE LIN */
+.search-container {
+    display: flex;
+    width: 100%;   /* Full width to align with the search bar */
+    margin-bottom: 10px;    
+}
+
+/* by TOH EE LIN */
+.search-container input[type="text"] {
+    flex-grow: 1;   /* Takes up the remaining space */
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #333;
+    border-radius: 4px;
+    margin-right: 10px;   
+}
+
+/* by TOH EE LIN */
+.search-button {
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background-color: #f2f2f2;
+    cursor: pointer;
+}
+
+/* by TOH EE LIN */
+.create-button {
+    padding: 10px;
+    width: 35%;
+    margin: 10px 70px 0px 0px;
+}
+
+/* by TOH EE LIN */
+button {
+    cursor: pointer;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background-color: #f2f2f2;
+}
+
+/* by TOH EE LIN */
+button:hover {
+    background-color: #e7e7e7;
+}
+
+/* by TOH EE LIN */
+.plant-container {
+    margin: 20px;
+    border: 3px solid #333;
+    padding: 10px;
+    background-color: #f0f8ff;
+}
+
+/* by TOH EE LIN */
+.plant-details {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+/* by TOH EE LIN */
+.plant-image {
+    margin: 15px 15px 0px 0px;
+} 
+
+/* by TOH EE LIN */
+.plant-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;   /* This will push the buttons down */
+}
+
+/* by TOH EE LIN */
+.info-text {
+    font-weight: bold;
+}
+
+/* by TOH EE LIN */
+.info-buttons {
+    display: flex;
+    justify-content: left;
+}
+
+/* by TOH EE LIN */
+.edit-button,
+.delete-button {
+    padding: 5px 15px;
+    margin-right: 20px;
+}
+
+/* by TOH EE LIN */
+.reviews-title {
+    font-weight: bold;
+    border: 3px solid #000;
+    background-color: #add8e6;
+    display: inline-block;
+    padding: 5px 50px;
+    margin: 10px 0px 5px 5px;
+}
+
+/* by TOH EE LIN */
+.review, .no-reviews {
+    border: 2px solid #8d8c8c;
+    background-color: #e0ffff;
+    padding: 10px 10px;
+    margin: 0px 5px 10px 5px;
+}
+
+/* by TOH EE LIN */
+.form-container {
+    width: 650px;
+    margin: 80px auto;
+    padding: 20px;
+    background-color: #e0ffff;
+    border: 3px solid #333;
+    border-radius: 4px;
+}
+
+/* by TOH EE LIN */
+.form-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* by TOH EE LIN */
+.form-row {
+    display: flex;
+    margin: 20px 20px 20px 5px;
+    align-items: center;
+}
+
+/* by TOH EE LIN */
+.form-row label {
+    min-width: 180px;
+    text-align: left;
+    margin-right: 10px;
+}
+
+/* by TOH EE LIN */
+.form-row input[type="text"],
+.form-row input[type="number"],
+.form-row textarea,
+.form-row input[type="file"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;    /* Only allow vertical resizing */
+}
+
+/* by TOH EE LIN */
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* by TOH EE LIN */
+.form-buttons input[type="button"],
+.form-buttons input[type="submit"] {
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    background-color: #f2f2f2;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* by TOH EE LIN */
+.form-buttons input[type="submit"] {
+    position: absolute;    /* Position the update button absolutely within form-buttons */
+    right: 450px;    /* 450px from the right edge of form-container */
+}
+
+/* by TOH EE LIN */
+.form-buttons input[type="button"]:hover,
+.form-buttons input[type="submit"]:hover {
+    background-color: #e7e7e7;
+}
+
+/* by TOH EE LIN */
+.form-content {
+    display: flex;
+    justify-content: space-between;    /* Aligns form and image side by side */
+}
+
+/* by TOH EE LIN */
+.plant-image-preview {
+    width: 200px;
+    height: 200px;
+    margin: 20px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* by TOH EE LIN */
+.plant-image-preview img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* by TOH EE LIN */
+.order-container {
+    background-color: #add8e6;
+    padding: 20px 25px;
+    border: 3px solid #333;
+    border-radius: 4px;
+    margin: 20px 20px 30px 20px;
+}
+
+/* by TOH EE LIN */
+.order-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* by TOH EE LIN */
+.status-select {
+    padding: 10px 30px;
+    margin: 0px 15px 0px 5px;
+}
+
+/* by TOH EE LIN */
+.update-status-button {
+    padding: 10px;
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* by TOH EE LIN */
+.update-status-button:hover {
+    background-color: #e7e7e7;
+}
+
+/* by TOH EE LIN */
+.delivery-container {
+    background-color: #add8e6;
+    padding: 20px 25px;
+    border: 3px solid #333;
+    border-radius: 4px;
+    margin: 20px 20px 30px 20px;
+}
+
+/* by TOH EE LIN */
+.delivery-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* by TOH EE LIN */
+.assign-select {
+    padding: 10px 30px;
+    margin: 0px 15px 0px 5px;
+}
+
+/* by TOH EE LIN */
+.assign-button {
+    padding: 10px;
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* by TOH EE LIN */
+.assign-button:hover {
+    background-color: #e7e7e7;
+}
