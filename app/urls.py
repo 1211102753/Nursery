@@ -32,7 +32,9 @@ urlpatterns = [
     path('make_payment/', views.make_payment, name='make_payment'),
     path('my_orders/', views.my_orders, name='my_orders'),
     path('account_settings/', views.account_settings, name='account_settings'),
-    path('update_profile/', views.update_profile, name='update_profile'),
+    path('profile/edit/', views.update_profile, name='edit_profile'),  # For displaying the form
+    path('profile/update/', views.update_profile, name='update_profile'),  # For handling the form submission
+    #path('update_profile/', views.update_profile, name='update_profile'),
     path('change_password/', views.change_password, name='change_password'),
 ]
 

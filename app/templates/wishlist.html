@@ -50,9 +50,19 @@
             </div>
         </div>
         {% empty %}
-        <div class="alert alert-info text-center mt-4">
-          <strong>Your wishlist is empty.</strong>
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        <strong>Your wishlist is empty.</strong>
+                    </div>
+                </div>
+                <div class="col-12 text-right">
+                    <a href="{% url 'plant_list' %}" class="btn btn-primary">Go to Plant List</a>
+                </div>
+            </div>
         </div>
+        
         {% endfor %}
     </div>
 

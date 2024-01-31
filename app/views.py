@@ -4,8 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout as django_logout
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
-#from .models import DeliveryMan, Plant, Order, Review
-from .models import DeliveryMan, Plant, Order, Review,ShoppingCart,CartItem,Customer,WishlistItem,Wishlist,OrderItem,Payment
+from .models import DeliveryMan, Plant, Order, Review,ShoppingCart,CartItem,WishlistItem,Wishlist,OrderItem,Payment,Customer
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
@@ -13,7 +12,8 @@ from decimal import Decimal
 from django.utils import timezone
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-
+from django.core.validators import validate_email, RegexValidator
+from django.core.exceptions import ValidationError
 
 # Create your views here.
 
@@ -250,6 +250,11 @@ def add_to_cart(request, plant_id):
     # Default the quantity to 1
     quantity = 1
     plant = get_object_or_404(Plant, id=plant_id)
+
+    if plant.plant_availability < quantity:
+        messages.error(request, f'Not enough {plant.plant_name} in stock.')
+        return redirect('plant_list')
+    
     customer = request.user.customer_profile
     cart, created = ShoppingCart.objects.get_or_create(customer=customer, defaults={'cart_total_price': 0})
     cart_item, created = CartItem.objects.get_or_create(
@@ -318,11 +323,23 @@ def remove_from_wishlist(request, item_id):
 @login_required
 def to_review(request):
     customer = request.user.customer_profile
+    # Get all order items to review for this customer that have not been reviewed yet
     order_items_to_review = OrderItem.objects.filter(
         order__customer=customer,
         to_review=True
-    )
-    return render(request, 'to_review.html', {'order_items_to_review': order_items_to_review})
+    ).select_related('plant')
+
+    # Create a set to keep track of which plants have been added
+    plants_reviewed = set()
+    unique_order_items_to_review = []
+
+    for item in order_items_to_review:
+        if item.plant not in plants_reviewed:
+            unique_order_items_to_review.append(item)
+            plants_reviewed.add(item.plant)
+
+    return render(request, 'to_review.html', {'order_items_to_review': unique_order_items_to_review})
+
 
 @login_required
 def submit_review(request, order_item_id):
@@ -336,13 +353,18 @@ def submit_review(request, order_item_id):
                 rating=rating,
                 comment=comment
             )
-            order_item.to_review = False
-            order_item.save()
+            # Mark all order items of this plant as reviewed
+            OrderItem.objects.filter(
+                order__customer=order_item.order.customer,
+                plant=order_item.plant,
+                to_review=True
+            ).update(to_review=False)
             messages.success(request, 'Your review has been submitted.')
             return redirect('to_review')
         else:
             messages.error(request, 'Rating is required.')
     return render(request, 'submit_review.html', {'order_item': order_item})
+
 
 @login_required
 def checkout(request):
@@ -435,6 +457,17 @@ def make_payment(request):
         
         # Create an Order instance and link the Payment instance
         with transaction.atomic():
+            for item in items:
+                plant = item.plant
+                if plant.plant_availability >= item.cart_plant_quantity:
+                    plant.plant_availability -= item.cart_plant_quantity
+                    plant.save()
+                else:
+                    # Handle the case where there isn't enough stock
+                    messages.error(request, f'Not enough {plant.plant_name} in stock.')
+                    return redirect('view_cart')
+                
+        with transaction.atomic():
             new_order = Order.objects.create(
                 customer=customer, 
                 payment=payment,
@@ -479,19 +512,76 @@ def account_settings(request):
 @login_required
 def update_profile(request):
     customer = request.user.customer_profile
+    valid_states = ['Johor', 'Kedah', 'Kelantan', 'Malacca', 'Negeri Sembilan', 'Pahang', 'Penang', 'Perak', 'Perlis', 'Sabah', 'Sarawak', 'Selangor', 'Terengganu', 'Kuala Lumpur', 'Labuan', 'Putrajaya']
     if request.method == 'POST':
-        customer.customer_name = request.POST.get('full_name')
-        customer.user.email = request.POST.get('email')
-        customer.customer_phone_number = request.POST.get('phone_number')
-        customer.customer_address = request.POST.get('address')
-        customer.customer_state = request.POST.get('state')
-        customer.customer_ic = request.POST.get('ic_no')
-        # ... Validate and save the data ...
-        customer.save()
-        customer.user.save()
-        messages.success(request, 'Your profile has been updated.')
-        return redirect('account_settings')
+        errors = False  # Flag to track if any validation errors occur
+
+        # Full Name validation
+        full_name = request.POST.get('full_name', '').strip()
+        if not (10 <= len(full_name) <= 50):
+            messages.error(request, 'Full name must be between 10 and 50 characters long.')
+            errors = True
+        
+        # Email validation
+        email = request.POST.get('email', '').strip()
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, 'Enter a valid email address.')
+            errors = True
+        
+        # Phone Number validation
+        phone_number = request.POST.get('phone_number', '').strip()
+        phone_regex = RegexValidator(regex=r'^60\d{9,10}$', message="Phone number must be entered in the format: '60123456789'. Up to 11 digits allowed.")
+        try:
+            phone_regex(phone_number)
+        except ValidationError:
+            messages.error(request, 'Invalid phone number format. Ensure it starts with 60 and is followed by 9 or 10 digits.')
+            errors = True
+        
+        # Address validation
+        address = request.POST.get('address', '').strip()
+        if len(address) > 200:
+            messages.error(request, 'Address must be under 200 characters long.')
+            errors = True
+
+        state = request.POST.get('state', '').strip().capitalize()
+        valid_states_capitalized = [s.capitalize() for s in valid_states]  # Capitalize valid states for case-insensitive comparison
+        if state not in valid_states_capitalized:
+            messages.error(request, 'Invalid state. Please enter a valid state.')
+            errors = True
+
+        # IC Number validation
+        ic_no = request.POST.get('ic_no', '').strip()
+        if not (len(ic_no) == 12 and ic_no.isdigit()):
+            messages.error(request, 'IC Number must consist of 12 digits.')
+            errors = True
+
+        if errors:
+            # If there were errors, re-render the page with the form data and errors
+            return render(request, 'edit_profile.html', {
+                'customer': customer,
+                'full_name': request.POST.get('full_name', '').strip(),
+                'email': request.POST.get('email', '').strip(),
+                'phone_number': request.POST.get('phone_number', '').strip(),
+                'address': request.POST.get('address', '').strip(),
+                'state': state,
+                'ic_no': request.POST.get('ic_no', '').strip(),
+            })
+        else:
+            # No errors, update the customer profile
+            customer.customer_name = request.POST.get('full_name', '').strip()
+            customer.user.email = request.POST.get('email', '').strip()
+            customer.customer_phone_number = request.POST.get('phone_number', '').strip()
+            customer.customer_address = request.POST.get('address', '').strip()
+            customer.customer_state = state
+            customer.customer_ic = request.POST.get('ic_no', '').strip()
+            customer.save()
+            customer.user.save()
+            messages.success(request, 'Your profile has been updated.')
+            return redirect('account_settings')
     else:
+        # GET request, render the page with the customer's current data
         return render(request, 'edit_profile.html', {'customer': customer})
 
 @login_required

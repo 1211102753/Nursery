@@ -60,14 +60,52 @@
         {% empty %}
         <div class="alert alert-info text-center mt-4">
             <strong>Your shopping cart is empty.</strong>
-          </div>
+        </div>
         {% endfor %}
-        <h3>Total Price: RM{{ total_price }}</h3>
+        <h3 id="total_price">Total Price: RM{{ total_price }}</h3>
         <div class="d-grid gap-2">
-            <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg">Checkout</a>
+            <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg" id="checkout_button">Checkout</a>
         </div>   
     </div>
-    
+        <!-- Modal -->
+<div class="modal fade" id="emptyCartModal" tabindex="-1" aria-labelledby="emptyCartModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="emptyCartModalLabel">Empty Cart</h5>
+        </div>
+        <div class="modal-body">
+          You cannot checkout because your shopping cart is empty. If you want to checkout, please fill your shopping cart first before proceeding to checkout.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="goToPlantList">Go to Plant List</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      const checkoutButton = document.getElementById('checkout_button');
+      const totalPrice = document.getElementById('total_price').textContent;
+      const goToPlantListButton = document.getElementById('goToPlantList');
+
+      checkoutButton.addEventListener('click', function(e) {
+        if (totalPrice.includes('RM0')) {
+          e.preventDefault(); // Prevent the link from being followed
+          // Trigger the modal
+          $('#emptyCartModal').modal('show');
+        }
+      });
+
+      // When the user clicks on 'Go to Plant List', redirect them to the plant list page
+      goToPlantListButton.addEventListener('click', function() {
+        window.location.href = "{% url 'plant_list' %}";
+      });
+    });
+</script>
+
+      
     <!-- Include the custom template tag 'multiply' for the total calculation -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

@@ -30,40 +30,49 @@
     <div class="container mt-4">
         <h2 class="mb-4">To Review</h2>
         {% for item in order_items_to_review %}
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <img src="{{ item.plant.plant_image.url }}" alt="{{ item.plant.plant_name }}" class="img-fluid">
-            </div>
-            <div class="col-md-8">
-                <form action="{% url 'submit_review' item.id %}" method="post">
-                    {% csrf_token %}
-                    <div class="form-row align-items-center">
-                        <div class="col-auto">
-                            <label for="plantName{{ forloop.counter }}" class="col-form-label"><strong>Plant Name:</strong></label>
+        <div class="row">
+            <div class="col-lg-8"> <!-- Match the column width with the shopping cart -->
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-4" style="padding: 15px;">
+                            <img src="{{ item.plant.plant_image.url }}" alt="{{ item.plant.plant_name }}"
+                                 class="img-fluid" style="width: 100%; height: auto;"> <!-- Adjust image styling to match cart -->
                         </div>
-                        <div class="col">
-                            <input type="text" id="plantName{{ forloop.counter }}" class="form-control-plaintext" readonly
-                                   value="{{ item.plant.plant_name }}">
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <form action="{% url 'submit_review' item.id %}" method="post">
+                                    {% csrf_token %}
+                                    <div class="form-row align-items-center mb-3">
+                                        <div class="col-auto">
+                                            <label for="plantName{{ forloop.counter }}" class="col-form-label"><strong>Plant Name:</strong></label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" id="plantName{{ forloop.counter }}" class="form-control-plaintext" readonly
+                                                   value="{{ item.plant.plant_name }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="rating{{ forloop.counter }}"><strong>Rating:</strong></label>
+                                        <select name="rating" id="rating{{ forloop.counter }}" class="form-control" required>
+                                            <option value="">Rate the plant</option>
+                                            <option value="1">1 Star</option>
+                                            <option value="2">2 Stars</option>
+                                            <option value="3">3 Stars</option>
+                                            <option value="4">4 Stars</option>
+                                            <option value="5">5 Stars</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="review{{ forloop.counter }}"><strong>Review:</strong></label>
+                                        <textarea name="comment" id="review{{ forloop.counter }}" class="form-control"
+                                            placeholder="Write your review here..." required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary float-right">Submit</button>
+                                </form>
+                            </div>
                         </div>
-                    </div>                    
-                    <div class="form-group">
-                        <label for="rating{{ forloop.counter }}"><strong>Rating:</strong></label>
-                        <select name="rating" id="rating{{ forloop.counter }}" class="form-control" required>
-                            <option value="">Rate the plant</option>
-                            <option value="1">1 Star</option>
-                            <option value="2">2 Stars</option>
-                            <option value="3">3 Stars</option>
-                            <option value="4">4 Stars</option>
-                            <option value="5">5 Stars</option>
-                        </select>
                     </div>
-                    <div class="form-group">
-                        <label for="review{{ forloop.counter }}"><strong>Review:</strong></label>
-                        <textarea name="comment" id="review{{ forloop.counter }}" class="form-control"
-                            placeholder="Write your review here..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary float-right">Submit</button>
-                </form>
+                </div>
             </div>
         </div>
         {% empty %}
@@ -72,10 +81,4 @@
         </div>
         {% endfor %}
     </div>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-
-</html>
+    

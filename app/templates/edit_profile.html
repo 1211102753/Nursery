@@ -28,39 +28,47 @@
     </nav>
 
     <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
         <h2 class="mb-4">Edit Profile</h2>
         <form method="post" action="{% url 'update_profile' %}">
             {% csrf_token %}
             <div class="form-group">
                 <label for="fullName">Full Name:</label>
-                <input type="text" id="fullName" name="full_name" class="form-control" value="{{ customer.customer_name }}">
+                <input type="text" id="fullName" name="full_name" class="form-control" value="{{ full_name|default:customer.customer_name }}">
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" class="form-control" value="{{ customer.user.email }}">
+                <input type="email" id="email" name="email" class="form-control" value="{{ email|default:customer.user.email }}">
             </div>
             <div class="form-group">
                 <label for="phoneNumber">Phone Number:</label>
-                <input type="text" id="phoneNumber" name="phone_number" class="form-control" value="{{ customer.customer_phone_number }}">
+                <input type="text" id="phoneNumber" name="phone_number" class="form-control" value="{{ phone_number|default:customer.customer_phone_number }}">
             </div>
             <div class="form-group">
                 <label for="address">Address:</label>
-                <input type="text" id="address" name="address" class="form-control" value="{{ customer.customer_address }}">
+                <input type="text" id="address" name="address" class="form-control" value="{{ address|default:customer.customer_address }}">
             </div>
             <div class="form-group">
                 <label for="state">State:</label>
-                <input type="text" id="state" name="state" class="form-control" value="{{ customer.customer_state }}">
+                <input type="text" id="state" name="state" class="form-control" value="{{ state|default:customer.customer_state }}">
             </div>
             <div class="form-group">
                 <label for="icNo">IC No:</label>
-                <input type="text" id="icNo" name="ic_no" class="form-control" value="{{ customer.customer_ic }}">
+                <input type="text" id="icNo" name="ic_no" class="form-control" value="{{ ic_no|default:customer.customer_ic }}">
             </div>
-            <!-- Include additional fields as necessary -->
-            <button type="submit" class="btn btn-primary">Confirm</button>
-            <a href="{% url 'account_settings' %}" class="btn btn-secondary">Back</a>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Confirm</button>
+            <!--button type="submit" class="btn btn-primary">Confirm</button-->
+                <a href="{% url 'account_settings' %}" class="btn btn-secondary">Back</a>
+            </div>
         </form>
     </div>
-    
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
